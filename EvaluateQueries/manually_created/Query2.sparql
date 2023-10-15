@@ -1,0 +1,20 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX chname: <https://jpsearch.go.jp/entity/chname/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+
+SELECT ?dbpedia ?viaf_id ?ndl_viaf ?ndl
+WHERE {  
+  SERVICE <https://jpsearch.go.jp/rdf/sparql>{
+      ?resource owl:sameAs ?viaf.
+    ?viaf rdfs:isDefinedBy <http://viaf.org/>.
+    ?resource owl:sameAs ?dbpedia.
+    FILTER(strstarts(str(?dbpedia), "http://dbpedia.org/"))
+    BIND (strafter(str(?viaf), "http://viaf.org/viaf/") AS ?viaf_id)
+  }
+  SERVICE <https://id.ndl.go.jp/auth/ndla/sparql>{
+    ?ndl skos:exactMatch ?ndl_viaf.
+    FILTER contains(str(?ndl_viaf),?viaf_id)
+  }
+}

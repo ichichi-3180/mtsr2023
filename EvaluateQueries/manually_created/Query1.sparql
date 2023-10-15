@@ -1,0 +1,19 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?label ?type (count(?wikidataEntity) AS ?entity_num) WHERE{
+    SERVICE <https://query.wikidata.org/sparql>{
+        ?wikidataEntity wdt:P7886 ?madb_id.
+        ?wikidataEntity wdt:P31 ?type.
+        ?type rdfs:label ?label.
+        FILTER langMatches( lang(?label), "ja" )
+    }
+    SERVICE <https://mediag.bunka.go.jp/sparql>{
+    ?madb_resource schema:identifier ?madb_id;
+                    schema:genre ?genre.
+    FILTER (?genre IN ("ゲームパッケージ", "ゲームバリエーション", "ゲーム作品"))
+    }
+}
+GROUP BY ?label ?type
+ORDER BY desc(?entity_num)

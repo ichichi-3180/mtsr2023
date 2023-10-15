@@ -1,0 +1,27 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
+PREFIX class:  <https://mediaarts-db.bunka.go.jp/data/class#>
+PREFIX ma:     <https://mediaarts-db.bunka.go.jp/data/property#>
+
+SELECT * WHERE {
+    SERVICE <https://mediag.bunka.go.jp/sparql> {
+        SELECT DISTINCT ?author ?name ?ndlaID 
+        (IRI(CONCAT("http://id.ndl.go.jp/auth/entity/", ?ndlaID)) AS ?ndl_entity) 
+        WHERE {
+            ?author rdf:type class:Agent;
+                    schema:name ?name;
+                    ma:ndla ?ndlaID.
+            ?work dcterms:creator ?author.
+            ?work rdf:type class:MangaBook.
+        }
+    }
+    SERVICE <https://id.ndl.go.jp/auth/ndla/sparql> {
+        ?ndl_entity ?ndl_entity_p ?ndl_entity_o .
+        OPTIONAL{
+            filter isBlank(?ndlna_o)
+            ?ndl_entity_o  ?ndl_entity_o_p ?ndl_entity_o_o.
+        }
+    }
+}
