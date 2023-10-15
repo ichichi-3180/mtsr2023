@@ -1,0 +1,19 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbr-ja: <http://ja.dbpedia.org/resource/>
+
+SELECT ?label ?dbpedia_author ?ndl_author ?viaf_author WHERE {
+    SERVICE <https://ja.dbpedia.org/sparql>{
+        ?dbpedia_author a dbo:Writer;
+            rdfs:label ?label.
+    }
+    SERVICE <https://jpsearch.go.jp/rdf/sparql>{
+        ?jpsearch_author owl:sameAs ?dbpedia_author. 
+        ?jpsearch_author owl:sameAs ?ndl_author;
+            owl:sameAs ?viaf_author .
+        ?ndl_author rdfs:isDefinedBy <http://id.ndl.go.jp/auth/ndlna/>.
+        ?viaf_author rdfs:isDefinedBy <http://viaf.org/>.
+    }
+} 

@@ -1,0 +1,10 @@
+SELECT * WHERE{
+    SERVICE <http://localhost:3050/test_dataset/sparql>{
+        SELECT ?s {
+            ?s ?p ?o
+        }LIMIT 16384
+    }
+    SERVICE <https://query.wikidata.org/sparql> {
+        ?s ?p ?o
+    }
+}

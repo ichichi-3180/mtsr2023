@@ -1,0 +1,14 @@
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
+PREFIX wdt:    <http://www.wikidata.org/prop/direct/>
+SELECT
+    ?wikidataEntity ?title (LANG(?title) AS ?lang_tag)
+WHERE {
+    SERVICE <https://mediag.bunka.go.jp/sparql>{
+        ?madb_resource schema:identifier ?media_art_database_id .
+    }
+    SERVICE <https://query.wikidata.org/sparql> {
+        ?wikidataEntity wdt:P7886 ?media_art_database_id ;
+        rdfs:label ?title .
+    }
+}
